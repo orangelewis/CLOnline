@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}新闻列表{% endblock %}
+{% load staticfiles %}
+{% block custom_bread %}
+    <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="/">首页</a>></li>
+                <li>新闻列表</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+
+{% block content %}
+    <section>
+	<div class="wp">
+		<div class="list" style="margin-top:0;">
+			<div class="left layout">
+				<div class="head">
+					<ul class="tab_header">
+						<li {% if sort == '' %}class="active"{% endif %}><a href="?sort=">最新 </a></li>
+						<li {% if sort == 'hot' %}class="active"{% endif %}><a href="?sort=hot">最热门</a></li>
+
+					</ul>
+				</div>
+                <div id="inWindow">
+                    <div class="tab_cont " id="content">
+					<div class="group_list">
+                        {% for article in all_articles.object_list %}
+                            <div class="box">
+                                <a href="{% url 'article:article_detail' article.url_object_id %}">
+                                    <img width="280" height="350" class="scrollLoading" src="{{ MEDIA_URL }}{{ article.front_image_name }}"/>
+                                </a>
+                                <div class="des">
+                                    <a href="{% url 'article:article_detail' article.url_object_id %}">
+                                        <h2>{{ article.title }}</h2>
+                                    </a>
+                                        <h4>创建时间：{{ article.create_date }}</h4>
+{#                                    <span class="fl">创建时间：<i class="key">{{ article.create_date }}</i></span>#}
+
+                                </div>
+                                <div class="bottom">
+{#                                    <a href="{% url 'film:film_detail' film.id %}"><span class="fl">来自{{ film.film_reg.name }}</span></a>#}
+                                    <span class="star fr  notlogin
+                                        " data-favid="15">
+                                        点击数：{{ article.click_nums}}
+                                    </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+
+					</div>
+                    <div class="pageturn">
+                        <ul class="pagelist">
+                            {% if all_articles.has_previous %}
+                                <li class="long"><a href="?{{ all_articles.previous_page_number.querystring }}">上一页</a></li>
+                            {% endif %}
+
+                            {% for page in all_articles.pages %}
+                                {% if page %}
+                                    {% ifequal page all_articles.number %}
+                                        <li class="active"><a href="?{{ page.querystring }}">{{ page }}</a></li>
+                                    {% else %}
+                                        <li><a href="?{{ page.querystring }}" class="page">{{ page }}</a></li>
+                                    {% endifequal %}
+                                {% else %}
+                                    <li class="none"><a href="">...</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if all_articles.has_next %}
+                                <li class="long"><a href="?{{ all_articles.next_page_number.querystring }}">下一页</a></li>
+                            {% endif %}
+
+                        </ul>
+                    </div>
+				</div>
+                </div>
+			</div>
+			<div class="right layout">
+				<div class="head">热门文章推荐</div>
+				<div class="group_recommend">
+                    {% for hot_article in hot_articles %}
+                    <dl>
+						<dt>
+							<a target="_blank" href="{{ ecmall_ad.url }}">
+								<img width="240" height="220" class="scrollLoading" src="{{ MEDIA_URL }}{{ hot_article.front_image_name}}"/>
+							</a>
+						</dt>
+						<dd>
+							<a target="_blank" href="{{ ecmall_ad.url }}"><h2> {{ hot_article.title }}</h2></a>
+
+						</dd>
+					</dl>
+                    {% endfor %}
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}
+

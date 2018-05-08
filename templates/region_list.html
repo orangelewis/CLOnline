@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}国家地区-CLOnline{% endblock %}
+{% load staticfiles %}
+{% block custom_bread %}
+    <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="/">首页</a>></li>
+                <li>地区</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+{% block content %}
+<section>
+	<div class="wp butler_list_box list">
+	<div class='left'>
+		<div class="listoptions">
+			<ul>
+
+				<li>
+					<h2>所在大陆</h2>
+
+					<div class="cont">
+                        <a href="?ct={{ category }}"><span class="{% ifequal continent_id '' %}active2{% endifequal %}">全部</span></a>
+                            {% for continent in all_continent %}
+                                <a href="?continent={{ continent.id }}&ct={{ category }}"><span class="{% ifequal continent_id continent.id|stringformat:"i" %}active2{% endifequal %}">{{ continent.name }}</span></a>
+                            {% endfor %}
+					</div>
+				</li>
+			</ul>
+		</div>
+{#		<div class="all">共<span class="key">{{ org_nums }}</span>家</div>#}
+		<div class="butler_list company list">
+		<div class="layout">
+			<div class="head">
+				<ul class="tab_header">
+					<li class="{% if sort == '' %}active{% endif %}"><a href="?ct={{ category }}&continent={{ continent_id }}">全部</a> </li>
+					<li class="{% if sort == 'films' %}active{% endif %}"><a href="?sort=films&ct={{ category }}&continent={{ continent_id }}">电影数 &#8595;</a></li>
+				</ul>
+			</div>
+            {% for film_reg in all_regs.object_list %}
+                <dl class="des difdes">
+                    <dt>
+                        <a href="{% url 'reg:reg_home' film_reg.id %}">
+                            <img width="200" height="120" class="scrollLoading" data-url="{{ MEDIA_URL }}{{ film_reg.image }}"/>
+                        </a>
+                    </dt>
+                    <dd>
+                        <div class="clearfix">
+                             <a href="{% url 'reg:reg_home' film_reg.id%}">
+                                 <h1>{{ film_reg.name }}</h1>
+
+                             </a>
+                        </div>
+                        <ul class="cont">
+                            <li class="first"><p class="pic9">电影数：<span>{{ film_reg.get_film_nums }}</span></p></li>
+
+
+                            </li>
+                        </ul>
+                    </dd>
+
+                </dl>
+            {% endfor %}
+		</div>
+		 <div class="pageturn">
+            <ul class="pagelist">
+                {% if all_regs.has_previous %}
+                    <li class="long"><a href="?{{ all_regs.previous_page_number.querystring }}">上一页</a></li>
+                {% endif %}
+
+                {% for page in all_regs.pages %}
+                    {% if page %}
+                        {% ifequal page all_regs.number %}
+                            <li class="active"><a href="?{{ page.querystring }}">{{ page }}</a></li>
+                        {% else %}
+                            <li><a href="?{{ page.querystring }}" class="page">{{ page }}</a></li>
+                        {% endifequal %}
+                    {% else %}
+                        <li class="none"><a href="">...</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if all_regs.has_next %}
+                    <li class="long"><a href="?{{ all_regs.next_page_number.querystring }}">下一页</a></li>
+                {% endif %}
+
+            </ul>
+        </div>
+		</div>
+	</div>
+
+
+
+        </div>
+</section>
+{% endblock %}

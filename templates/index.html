@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% block title %}CLOnline{% endblock %}
+{% load staticfiles %}
+{% block custom_bread %}
+{% endblock %}
+
+{% block custom_js %}
+    <script type="text/javascript" src="/static/js/index.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="banner">
+			<div class="wp">
+				<div class="fl">
+					<div class="imgslide">
+						<ul class="imgs">
+                            {% for banner in all_banners %}
+                            <li>
+                                    <a href="{{ banner.url }}">
+                                        <img width="1200" height="478" src="{{ MEDIA_URL }}{{ banner.image }}" />
+                                    </a>
+                                </li>
+                            {% endfor %}
+
+						</ul>
+					</div>
+					<div class="unslider-arrow prev"></div>
+					<div class="unslider-arrow next"></div>
+				</div>
+
+				</div>
+
+
+			</div>
+<!--banner end-->
+<!--feature start-->
+	<section>
+		<div class="wp">
+			<ul class="feature">
+				<li class="feature1">
+					<img class="pic" src="/static/images/feature1.png"/>
+					<p class="center">专业权威</p>
+				</li>
+				<li class="feature2">
+					<img class="pic" src="/static/images/feature2.png"/>
+					<p class="center">内容最新</p>
+				</li>
+				<li class="feature3">
+					<img class="pic" src="/static/images/feature3.png"/>
+					<p class="center">炫酷内容</p>
+				</li>
+				<li class="feature4">
+					<img class="pic" src="/static/images/feature4.png"/>
+					<p class="center">数据真实</p>
+				</li>
+			</ul>
+		</div>
+	</section>
+<!--feature end-->
+<!--module1 start-->
+	<section>
+		<div class="module">
+			<div class="wp">
+				<h1>电影列表</h1>
+				<div class="module1 eachmod">
+					<div class="module1_1 left">
+						<img width="228" height="614" src="/static/images/module1_1.jpg"/>
+						<p class="fisrt_word">炫酷大片</p>
+						<a class="more" href="{% url 'film:film_list' %}">查看更多电影 ></a>
+					</div>
+					<div class="right group_list">
+						<div class="module1_2 box">
+							<div class="imgslide4">
+								<ul class="imgs">
+                                    {% for banner_film in banner_films %}
+                                    <li>
+
+                                        <a href="{% url 'film:video_play' banner_film.id %}">
+                                            <img width="470" height="300" src="{{ MEDIA_URL }}{{ banner_film.image }}" />
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+								</ul>
+							</div>
+							<div class="unslider-arrow4 prev"></div>
+							<div class="unslider-arrow4 next"></div>
+						</div>
+                            {% for film in films %}
+                            <div class="module1_{{ forloop.counter|add:2 }} box">
+
+                                <a href="{% url 'film:video_play' film.id %}">
+                                    <img width="233" height="190" src="{{ MEDIA_URL }}{{ film.image }}"/>
+                                </a>
+                                <div class="des">
+                                    <a href="{% url 'film:video_play' film.id %}">
+                                        <h2 title="{{ film.name }}">{{ film.name }}</h2>
+                                    </a>
+                                    
+                                    <span class="fr">点击数：{{ film.click_nums }}</span>
+                                </div>
+                                <div class="bottom">
+                                    <span class="fl" title="{{ film.film_reg.name }}">{{ film.film_reg.name }}</span>
+                                    <span class="star fr">{{ film.fav_nums }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+    <section>
+		<div class="module">
+			<div class="wp">
+				<h1>新闻列表</h1>
+				<div class="module1 eachmod">
+					<div class="module1_1 left">
+						<img width="228" height="614" src="/static/images/module3_1.jpg"/>
+						<p class="fisrt_word">电影快讯</p>
+						<a class="more" href="{% url 'article:article_list' %}">查看更多新闻 ></a>
+					</div>
+					<div class="right group_list">
+						<div class="module1_2 box">
+							<div class="imgslide3">
+								<ul class="imgs">
+                                    {% for banner_article in banner_articles %}
+                                    <li>
+
+                                        <a href="{% url 'article:article_detail' banner_article.url_object_id %}">
+                                            <img width="470" height="300" src="{{ MEDIA_URL }}{{ banner_article.front_image_name }}" />
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+								</ul>
+							</div>
+							<div class="unslider-arrow3 prev"></div>
+							<div class="unslider-arrow3 next"></div>
+						</div>
+                            {% for article in articles %}
+                            <div class="module1_{{ forloop.counter|add:2 }} box">
+
+                                <a href="{% url 'article:article_detail' article.url_object_id %}">
+                                    <img width="233" height="190" src="{{ MEDIA_URL }}{{ article.front_image_name }}"/>
+                                </a>
+                                <div class="des">
+                                    <a href="{% url 'article:article_detail' article.url_object_id %}">
+                                        <h2 title="{{ article.title}}">{{ article.title }}</h2>
+                                    </a>
+
+                                </div>
+
+                            </div>
+                            {% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+{#	<section>#}
+{#		<div class="module greybg">#}
+{#			<div class="wp">#}
+{#				<h1>课程机构</h1>#}
+{#				<div class="module3 eachmod">#}
+{#					<div class="module3_1 left">#}
+{#						<img width="228" height="463" src="/static/images/module3_1.jpg"/>#}
+{#						<p class="fisrt_word">名校来袭<br/>权威认证</p>#}
+{#						<a class="more" href="{% url 'org:org_list' %}">查看更多机构 ></a>#}
+{#					</div>#}
+{#					<div class="right">#}
+{#						<ul>#}
+{#                            {% for org in film_orgs %}#}
+{#                                <li class="{% if forloop.counter|divisibleby:5 %}five{% endif %}">#}
+{#                                    <a href="{% url 'org:org_home' org.id %}">#}
+{#                                        <div class="company">#}
+{#                                            <img width="184" height="100" src="{{ MEDIA_URL }}{{ org.image }}"/>#}
+{#                                            <div class="score">#}
+{#                                                <div class="circle">#}
+{#                                                    <h2>{{ org.tag }}</h2>#}
+{#                                                </div>#}
+{#                                            </div>#}
+{#                                        </div>#}
+{#                                        <p><span class="key" title="{{ org.name }}">{{ org.name }}</span></p>#}
+{#                                    </a>#}
+{#                                </li>#}
+{#                            {% endfor %}#}
+{#						</ul>#}
+{#					</div>#}
+{#				</div>#}
+{#			</div>#}
+{#		</div>#}
+{#	</section>#}
+{% endblock %}
+
+

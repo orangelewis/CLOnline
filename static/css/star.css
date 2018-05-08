@@ -1,0 +1,71 @@
+#starRating .photo span {
+    position: relative;
+    display: inline-block;
+    width: 23px;
+    height: 24px;
+    overflow: hidden;
+    margin-right: 8px;
+    cursor: pointer;
+}
+#starRating .photo span:last-child {
+    margin-right: 0px;
+}
+#starRating .photo span .nohigh {
+    position: absolute;
+    width: 23px;
+    height: 24px;
+    top: 0;
+    left: 0;
+    background: url("star-btn.png");
+}
+#starRating .photo span .high {
+    position: absolute;
+    width: 23px;
+    height: 24px;
+    top: 0;
+    left: 0;
+    background: url("star-btn-hover.png");
+}
+#starRating .starNum {
+    font-size: 26px;
+    color: #de4414;
+    margin-top: 4px;
+    margin-bottom: 10px;
+}
+#starRating .bottoms {
+    height: 54px;
+    border-top: 1px solid #d8d8d8;
+}
+#starRating .photo {
+    margin-top: 30px;
+}
+#starRating .bottoms a {
+    margin-bottom: 0;
+}
+#starRating .bottoms .garyBtn {
+    margin-right: 57px!important;
+}
+#starRating .bottoms a {
+    width: 80px;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 3px;
+    display: inline-block;
+    font-size: 16px;
+    transition: all 0.2s linear;
+    margin: 16px 0 22px;
+    text-align: center;
+    cursor: pointer;
+}
+.garyBtn {
+    margin-right: 60px!important;
+    background-color: #e1e1e1;
+    color: #999999;
+}
+.blueBtn {
+    background-color: #1968b1;
+    color: #fff;
+}
+.blueBtn:hover {
+    background: #0e73d0;
+}

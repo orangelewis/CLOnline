@@ -1,0 +1,481 @@
+{% extends 'base.html' %}
+{% block title %}预告片{% endblock %}
+{% load staticfiles %}
+{% block custom_bread %}
+    <section>
+	<div class="wp">
+
+			<ul class="crumbs">
+				<li><a href="/">首页</a>></li>
+                <li><a href="{% url 'film:film_list' %}">电影列表</a>></li>
+                <li>预告片</li>
+			</ul>
+
+	</div>
+</section>
+{% endblock %}
+<script>
+    $('#create-switch').wrap('<div class="switch" />').parent().bootstrapSwitch();
+</script>
+
+{% block custom_css %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/muke/course/course-comment.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/muke/base.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/muke/common-less.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/muke/course/learn-less.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/aui.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/mooc.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/muke/course/common-less.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/video-js.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/star.css' %}">
+    <style>
+        .video-js .vjs-big-play-button{
+            top: 50%;
+            left: 50%;
+        }
+
+    </style>
+{% endblock %}
+
+
+
+
+{% block content %}
+    <div id="main">
+    <div style="width:1000px;height:575px; margin-left: 50px">
+        <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="1000" height="575"
+              poster="http://video-js.zencoder.com/oceans-clip.png"
+              data-setup="{}">
+            <source src={{ video.url }} type='video/mp4'>
+        </video>
+    </div>
+    <div class="course-info-main clearfix w has-progress">
+
+        <div class="info-bar clearfix">
+            <div class="content-wrap clearfix">
+                <div class="content">
+                    <div class="mod-tab-menu">
+                        <ul class="course-menu clearfix">
+
+                            <li><a id="commentOn" class="active" href=""><span>评论</span></a></li>
+                        </ul>
+                    </div>
+
+                    <!--发布评论-->
+                    <div id="js-pub-container" class="issques clearfix js-form">
+                        <div class="wgt-ipt-wrap pub-editor-wrap " id="js-pl-input-fake">
+                            <textarea id="js-pl-textarea" class="" placeholder="扯淡、吐槽、表扬……想说啥就说啥！" ></textarea>
+                        </div>
+                        <input type="button" id="js-pl-submit" class="pub-btn" data-cid="452" value="发表评论">
+                        <p class="global-errortip js-global-error"></p>
+                    </div>
+                    <div id="course_note">
+                        <ul class="mod-post" id="comment-list">
+                            {% for user_comments in all_comments %}
+                            <li class="post-row">
+                                <div class="media">
+                                    <span target="_blank"><img src='{{ MEDIA_URL }}{{ user_comments.user.image }}' width='40' height='40' /></span>
+                                </div>
+                                <div class="bd">
+                                    <div class="tit">
+                                        <span target="_blank">{{ user_comments.user.username }}</span>
+                                    </div>
+                                    <p class="cnt">{{ user_comments.comments }}</p>
+                                    <div class="footer clearfix">
+                                        <span title="创建时间" class="l timeago">时间：{{ user_comments.add_time }}</span>
+                                        {% if user_comments.user == request.user  %}
+                                        <span title="{{ user_comments.id }}" class="r delete_comment">删除</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                </div>
+                <div class="aside r">
+                    <div class="bd">
+                    <div class="box mb40">
+                        <h4>请您打分</h4>
+                        <div id="starRating">
+                            <p class="photo">
+                                <span><i class="high"></i><i class="nohigh"></i></span>
+                                <span><i class="high"></i><i class="nohigh"></i></span>
+                                <span><i class="high"></i><i class="nohigh"></i></span>
+                                <span><i class="high"></i><i class="nohigh"></i></span>
+                                <span><i class="high"></i><i class="nohigh"></i></span>
+                            </p>
+                            <p class="starNum">0.0分</p>
+                            <div class="bottoms">
+                                <a class="garyBtn cancleStar">取消评分</a><a class="blueBtn sureStar">确认</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box mb40">
+                        <h4>作品评分</h4>
+                        <dl class="first">
+                            <div class="course-info-tip">
+                            {% if douban_id == 0 %}
+                            <dl class="first">
+                                <dt>豆瓣无评分</dt>
+
+                            </dl>
+                            <dl>
+                                <dt>IMDB无评分</dt>
+
+                            </dl>
+                            {% else %}
+                            <dl class="first">
+                                <dt>豆瓣:{{ douban_score }}/10</dt>
+
+                            </dl>
+                            <dl>
+                                <dt>IMDB:{{ imdb_score }}/10</dt>
+
+                            </dl>
+                            {% endif %}
+                            <dl>
+                                {% if average == 0 %}
+                                 <dt>本站暂无评分</dt>
+                                {% else %}
+                                <dt>本站:{{ average }}/10(评分人数：{{ film.score_nums }}人)</dt>
+                                {% endif %}
+
+                            </dl>
+                        </div>
+
+                        </dl>
+                    </div>
+
+
+                         <div class="box mb40">
+                        <h4>资料下载</h4>
+                        <ul class="downlist">
+                            {% for film_resource in film_resources %}
+                            <li>
+                                <span ><i class="aui-iconfont aui-icon-file"></i>&nbsp;&nbsp;{{ film_resource.name }}</span>
+                                <a href="{{ MEDIA_URL }}{{ film_resource.download }}" class="downcode" target="_blank" download="" data-id="274" title="">下载</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="box mb40" >
+                        <h4>点赞电影</h4>
+
+                        <button type="button"  class="clBtn"  id="jsLeftBtn" style="background: #ff7800;
+    cursor: pointer;
+    color: #fff !important;" >
+                         {% if has_film_faved %}已点赞{% else %}点赞{% endif %}
+                        </button>
+
+
+
+                    </div>
+                    <div class="box mb40">
+                        <h4>导演</h4>
+
+                        <div class="teacher-info">
+                            <dt>
+                            <a href="{% url 'reg:director_detail' film.director.id %}">
+                                <img src='{{ MEDIA_URL }}{{ film.director.image }}' width='80' height='80' />
+                            </a>
+
+                        </div>
+                        <div class="course-info-tip">
+                            <dl class="first">
+                                <dt>介绍：</dt>
+                                {% autoescape off %}
+                                <dd class="autowrap">{{ film.director.desc }}</dd>
+                                {% endautoescape %}
+                            </dl>
+
+                        </div>
+
+                    </div>
+
+
+
+
+
+                    <div class="cp-other-learned  js-comp-tabs">
+                        <div class="cp-header clearfix">
+                            <h2 class="cp-tit l">其他用户还看过</h2>
+                        </div>
+                        <div class="cp-body">
+                            <div class="cp-tab-pannel js-comp-tab-pannel" data-pannel="film" style="display: block">
+                                <!-- img 200 x 112 -->
+                                <ul class="other-list">
+                                    {% for relate_film in relate_films %}
+                                    <li class="curr">
+                                        <a href="{% url 'film:video_play' relate_film.id %}" target="_blank">
+                                            <img src="{{ MEDIA_URL }}{{ relate_film.image }}" alt="{{ relate_film.name }}">
+                                            <span class="name autowrap">{{ relate_film.name }}</span>
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    </div>    </div>
+            </div>
+            <div class="clear"></div>
+
+        </div>
+
+    </div>
+
+
+        </div>
+        <div class="clear"></div>
+
+
+</div>
+</div>
+{% endblock %}
+
+{% block custom_js %}
+
+
+
+<script src="{% static 'js/video.min.js' %}" type="text/javascript"></script>
+<script type="text/javascript">
+    //添加评论
+
+    var keywords= new Array()
+    {% for keyword in banWord %}
+        keywords.push("{{ keyword }}")
+
+    {% endfor %}
+    function _filter_method(value){
+    //获取文本输入框中的内容
+    var value = value
+    //遍历敏感词数组
+    for(var i=0;i<keywords.length;i++){
+        //全局替换
+        var reg = new RegExp(keywords[i],"g");
+        //判断内容中是否包括敏感词
+        if(value.indexOf(keywords[i])!=-1){
+            var result = value.replace(reg,"**");
+            value = result;
+        }
+        }
+     return value;
+    }
+    $('#js-pl-submit').on('click', function(){
+        var comments = $("#js-pl-textarea").val()
+        comments=_filter_method(comments)
+        if(comments == ""){
+            alert("评论不能为空")
+            return
+        }
+        $.ajax({
+            cache: false,
+            type: "post",
+            url:"{% url 'film:add_comment' %}",
+            data:{'film_id':{{ film.id }}, 'comments':comments},
+            async: true,
+            beforeSend:function(xhr, settings){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+            success: function(data) {
+                if(data.status == 'fail'){
+                    if(data.msg == '用户未登录'){
+                        window.location.href="/login/";
+                    }else{
+                        alert(data.msg)
+                    }
+
+                }else if(data.status == 'success'){
+                    {#window.location.reload();//刷新当前页面.#}
+                    var comments = $("#js-pl-textarea").val();
+                    comments=_filter_method(comments);
+                    var str =  "<li class='post-row'> <div class='media'><span target='_blank'><img src='"+"{{ MEDIA_URL }}{{ request.user.image  }}";
+                    str = str+"'width='40' height='40'></span></div><div class='bd'><div class='tit'><span target='_blank'>"+"{{ request.user.username }}";
+                    str = str +"</span></div><p class='cnt'>"+comments;
+                    str = str +"</p><div class='footer clearfix'><span title='创建时间'' class='l timeago'>时间："+getTime()+ "</span><span title='123' class='r delete_comment'>删除</span></div></div></li>";
+
+
+                    function getTime(){
+                        var nowDate = new Date();
+                        var year = nowDate.getFullYear();
+                        var month = filterNum(nowDate.getMonth()+1);
+                        var day = filterNum(nowDate.getDate());
+                        var hours = filterNum(nowDate.getHours());
+                        var min = filterNum(nowDate.getMinutes());
+                        var seconds = filterNum(nowDate.getSeconds());
+                        return year+"年"+month+"月"+day+"日 "+hours+":"+min;
+                    }
+                    function filterNum(num){
+		                if(num < 10){
+			                return "0"+num;
+		                }else{
+			                return num;
+		                }
+                    }
+                    $("#comment-list").prepend(str)
+
+                }
+            },
+        });
+    });
+
+</script>
+<script type="text/javascript">
+//收藏分享
+function add_fav(current_elem, fav_id, fav_type){
+    $.ajax({
+        cache: false,
+        type: "post",
+        url:"{% url "film:add_fav" %}",
+        data:{'fav_id':fav_id, 'fav_type':fav_type},
+        async: true,
+        beforeSend:function(xhr, settings){
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        },
+        success: function(data) {
+            if(data.status == 'fail'){
+                if(data.msg == '用户未登录'){
+                    window.location.href="/login/";
+                }else{
+                    alert(data.msg)
+                }
+
+            }else if(data.status == 'success'){
+                current_elem.text(data.msg)
+            }
+        },
+    });
+}
+
+$('#jsLeftBtn').on('click', function(){
+    add_fav($(this), {{ film.id }});
+});
+
+$('#jsRightBtn').on('click', function(){
+    add_fav($(this), {{ film.reg.id }});
+});
+
+
+</script>
+<script type="text/javascript">
+//星星
+    $(function () {
+        //评分
+        var starRating = 0;
+        $('.photo span').on('mouseenter',function () {
+            var index = $(this).index()+1;
+            $(this).prevAll().find('.high').css('z-index',1)
+            $(this).find('.high').css('z-index',1)
+            $(this).nextAll().find('.high').css('z-index',0)
+            $('.starNum').html((index*2).toFixed(1)+'分')
+        })
+        $('.photo').on('mouseleave',function () {
+            $(this).find('.high').css('z-index',0)
+            var count = starRating / 2
+            if(count == 5) {
+                $('.photo span').find('.high').css('z-index',1);
+            } else {
+                $('.photo span').eq(count).prevAll().find('.high').css('z-index',1);
+            }
+            $('.starNum').html(starRating.toFixed(1)+'分')
+        })
+        $('.photo span').on('click',function () {
+            var index = $(this).index()+1;
+            $(this).prevAll().find('.high').css('z-index',1)
+            $(this).find('.high').css('z-index',1)
+            starRating = index*2;
+            $('.starNum').html(starRating.toFixed(1)+'分');
+            alert('您评分为：'+(starRating.toFixed(1)+'分，点击确认，添加评分在本站'))
+        })
+        //取消评分
+        $('.cancleStar').on('click',function () {
+            starRating = 0;
+            $('.photo span').find('.high').css('z-index',0);
+            $('.starNum').html(starRating.toFixed(1)+'分');
+        })
+        //确定评分
+        $('.sureStar').on('click',function () {
+            if(starRating===0) {
+                alert('最低一颗星！');
+            } else {
+               add_score($(this),{{ film.id }},starRating);
+               alert("评分成功，刷新本页面获取本站最新评分");
+
+            }
+        })
+    })
+    function add_score(current_elem, film_id, score){
+    $.ajax({
+        cache: false,
+        type: "post",
+        url:"{% url "film:add_score" %}",
+        data:{'film_id':film_id, 'score':score},
+        async: true,
+        beforeSend:function(xhr, settings){
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        },
+        success: function(data) {
+            if(data.status == 'fail'){
+                if(data.msg == '用户未登录'){
+                    window.location.href="/login/";
+                }else{
+                    alert(data.msg)
+                }
+
+            }else if(data.status == 'success'){
+
+            }
+        },
+    });
+}
+
+</script>
+
+
+<script type="text/javascript">
+$('.delete_comment').on('click',function () {
+   var r=confirm("是否删除评论？");
+   if (r==true) {
+       $(this).parent().parent().parent().remove();
+       $.ajax({
+           cache: false,
+            type: "post",
+            url:"{% url 'film:del_comment' %}",
+            data:{'comment_id':$(this).attr("title")},
+            async: true,
+            beforeSend:function(xhr, settings){
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+           success:function(data) {
+                if(data.status == 'fail'){
+                    if(data.msg == '用户未登录'){
+                        window.location.href="/login/";
+                    }else{
+                        alert(data.msg)
+                    }
+                }
+                else {
+                    if(data.status == 'success')
+                        alert("删除成功！");
+                }
+            }
+
+       });
+
+   }
+    else {
+        alert("取消删除！");
+    }
+
+})
+
+</script>
+{% endblock %}
+

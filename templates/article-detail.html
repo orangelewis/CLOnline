@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block title %}文章详情{% endblock %}
+{% load staticfiles %}
+{% block custom_bread %}
+    <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="/">首页</a>></li>
+                <li><a href="{% url 'article:article_list' %}">新闻列表</a>></li>
+                <li>新闻详情</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+{% block content %}
+    <section>
+    <div id="container" style="padding: 0 10px;width:1000px;margin:0 auto;">
+        <div style="width:66.66666666666666% ">
+            <div id="contentNews" style="width:1000px;font-family:'Microsoft Yahei';margin-bottom:30px;">
+                <h1 style="line-height:1; font-size:29px; color:#000000; font-weight:normal; padding-top:24px; text-align:left; position:relative;">{{ article.title}}</h1>
+                <div id="time" style="height:16px; /*margin-bottom:33px;*/margin-bottom:15px; margin-top:18px;">
+                    <span style="height:16px; width:auto; display:inline-block; line-height:16px; float:left; color:#687e94; margin-right:15px; font-size:13px;">时间:{{ article.create_date }}</span>
+                </div>
+                <div id="content" style="font-size:17px; line-height:35px;">
+                {% autoescape off %}
+                {{ article.article }}
+                {% endautoescape %}
+                </div>
+            </div>
+        </div>
+    </div>
+{#	<div class="wp butler-detail-box butler-diaryd-box clearfix">#}
+{#        <div class="fl list">#}
+{#            <div class="butler_detail_list clearfix">#}
+{#                <div class="brief">#}
+{##}
+{#                        <dd>#}
+{#                            <a href="/diary/hk_detail/10/">#}
+{#                                <h1>{{ article.title}}</h1>#}
+{#                            </a>#}
+{##}
+{#                            <ul class="cont">#}
+{#                                {% autoescape off %}#}
+{#                                <li><span>{{ article.article }}</span></li>#}
+{#                                {% endautoescape %}#}
+{#                            </ul>#}
+{##}
+{#                        </dd>#}
+{##}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="butler_detail_cont clearfix">#}
+{##}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="fr list">#}
+{#             <div class="butler_detail_list">#}
+{##}
+{#            </div>#}
+{#            <div class="butler_detail_cont">#}
+{#                <div class="butler_list_box">#}
+{#                    <div class="right layout">#}
+{##}
+{##}
+{##}
+{##}
+{##}
+{#                        <div class="head">热门文章</div>#}
+{##}
+{#                        {% for hot_article in sorted_article %}#}
+{#                        <dl class="des">#}
+{#                            <span class="num fl">{{ forloop.counter }}</span>#}
+{#                            <a href="{% url 'reg:director_detail' hot_director.id %}">#}
+{#                                <dt>#}
+{#                                    <img width="50" height="50" class="scrollLoading" src="{{ MEDIA_URL }}{{ hot_article.front_image_name }}"/>#}
+{#                                </dt>#}
+{#                            </a>#}
+{#                            <dd>#}
+{#                                <a href="{% url 'reg:director_detail' hot_director.id %}">#}
+{#                                    <h1 title="{{ hot_article.title }}">{{ hot_article.title }}</h1>#}
+{#                                </a>#}
+{##}
+{#                            </dd>#}
+{#                        </dl>#}
+{#                        {% endfor %}#}
+{##}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#	</div>#}
+</section>
+{% endblock %}
+
+
+{% block custom_js %}
+<script type="text/javascript">
+//收藏分享
+function add_fav(current_elem, fav_id, fav_type){
+    $.ajax({
+        cache: false,
+        type: "post",
+        url:"{% url "reg:add_fav" %}",
+        data:{'fav_id':fav_id, 'fav_type':fav_type},
+        async: true,
+        beforeSend:function(xhr, settings){
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        },
+        success: function(data) {
+            if(data.status == 'fail'){
+                if(data.msg == '用户未登录'){
+                    window.location.href="/login/";
+                }else{
+                    alert(data.msg)
+                }
+
+            }else if(data.status == 'success'){
+                current_elem.text(data.msg)
+            }
+        },
+    });
+}
+
+$('#jsLeftBtn').on('click', function(){
+    add_fav($(this), {{ director.id }}, 3);
+});
+
+$('#jsRightBtn').on('click', function(){
+    add_fav($(this), {{ director.reg.id }}, 2);
+});
+
+
+</script>
+
+{% endblock %}
+

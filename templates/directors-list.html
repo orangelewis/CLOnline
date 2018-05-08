@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}导演列表{% endblock %}
+{% load staticfiles %}
+{% block custom_bread %}
+    <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="/">首页</a>></li>
+                <li>导演列表</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+
+{% block content %}
+    <section>
+	<div class="wp butler_list_box list">
+	<div class='left'>
+		<div class="butler_list layout">
+			<div class="head">
+				<ul class="fl tab_header">
+					<li {% if sort == '' %}class="active"{% endif %}><a href="?sort=">全部</a> </li>
+					<li {% if sort == 'hot' %}class="active"{% endif %}><a href="?sort=hot">人气 &#8595;</a></li>
+				</ul>
+                <div class="fr butler-num">共<span class="key">{{ dir_nums }}</span>人&nbsp;&nbsp;&nbsp;</div>
+			</div>
+                {% for director in all_directors.object_list %}
+                <dl class="des">
+					<dt>
+						<a href="{% url 'reg:director_detail' director.id %}">
+                            <div class="picpic">
+                                <img width="100" height="100" class="scrollLoading" src="{{ MEDIA_URL }}{{ director.image }}"/>
+                            </div>
+                        </a>
+
+					</dt>
+					<dd>
+						<a href="{% url 'reg:director_detail' director.id %}">
+                            <h1>{{ director.name }}</h1>
+                        </a>
+						<ul class="cont">
+							<li>年龄：<span>{{ director.age }}岁</span></li>
+
+						</ul>
+					</dd>
+{#                    <a class="buy buyservice" href="{% url 'reg:director_detail' director.id %}"><br/>查看<br/>详情</a>#}
+                </dl>
+                {% endfor %}
+
+
+		</div>
+		<div class="pageturn">
+            <ul class="pagelist">
+                {% if all_directors.has_previous %}
+                    <li class="long"><a href="?{{ all_directors.previous_page_number.querystring }}">上一页</a></li>
+                {% endif %}
+
+                {% for page in all_directors.pages %}
+                    {% if page %}
+                        {% ifequal page all_directors.number %}
+                            <li class="active"><a href="?{{ page.querystring }}">{{ page }}</a></li>
+                        {% else %}
+                            <li><a href="?{{ page.querystring }}" class="page">{{ page }}</a></li>
+                        {% endifequal %}
+                    {% else %}
+                        <li class="none"><a href="">...</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if all_directors.has_next %}
+                    <li class="long"><a href="?{{ all_directors.next_page_number.querystring }}">下一页</a></li>
+                {% endif %}
+
+            </ul>
+        </div>
+	</div>
+	<div class="right layout">
+		<div class="head">导演排行榜</div>
+            {% for hot_director in sorted_director %}
+            <dl class="des">
+                <span class="num fl">{{ forloop.counter }}</span>
+                <a href="/diary/hk_detail/6/">
+                    <dt>
+                        <img width="50" height="50" class="scrollLoading"  src="{{ MEDIA_URL }}{{ hot_director.image }}"/>
+                    </dt>
+                </a>
+                <dd>
+                    <a href="/diary/hk_detail/6/">
+                        <h1 title="{{ hot_director.name }}">{{ hot_director.name }}</h1>
+                    </a>
+
+                </dd>
+            </dl>
+            {% endfor %}
+
+	</div>
+    </div>
+</section>
+{% endblock %}
+

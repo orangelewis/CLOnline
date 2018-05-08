@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %}电影列表{% endblock %}
+{% load staticfiles %}
+{% block custom_bread %}
+    <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="/">首页</a>></li>
+                <li>电影列表</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+
+{% block content %}
+    <section>
+	<div class="wp">
+		<div class="list" style="margin-top:0;">
+			<div class="left layout">
+				<div class="head">
+					<ul class="tab_header">
+						<li {% if sort == '' %}class="active"{% endif %}><a href="?sort=">最新 </a></li>
+						<li {% if sort == 'hot' %}class="active"{% endif %}><a href="?sort=hot">最热门</a></li>
+
+					</ul>
+				</div>
+                <div id="inWindow">
+                    <div class="tab_cont " id="content">
+					<div class="group_list">
+                        {% for film in all_films.object_list %}
+                            <div class="box">
+                                <a href="{% url 'film:video_play' film.id %}">
+                                    <img width="280" height="350" class="scrollLoading" src="{{ MEDIA_URL }}{{ film.image }}"/>
+                                </a>
+                                <div class="des">
+                                    <a href="{% url 'film:video_play' film.id %}">
+                                        <h2>{{ film.name }}</h2>
+                                    </a>
+                                    <span class="fl">时长：<i class="key">{{ film.times }}</i></span>
+
+                                </div>
+                                <div class="bottom">
+                                    <a href="{% url 'film:video_play' film.id %}"><span class="fl">来自{{ film.film_reg.name }}</span></a>
+                                    <span class="star fr  notlogin
+                                        " data-favid="15">
+                                        {{ film.fav_nums }}
+                                    </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+
+					</div>
+                    <div class="pageturn">
+                        <ul class="pagelist">
+                            {% if all_films.has_previous %}
+                                <li class="long"><a href="?{{ all_films.previous_page_number.querystring }}">上一页</a></li>
+                            {% endif %}
+
+                            {% for page in all_films.pages %}
+                                {% if page %}
+                                    {% ifequal page all_films.number %}
+                                        <li class="active"><a href="?{{ page.querystring }}">{{ page }}</a></li>
+                                    {% else %}
+                                        <li><a href="?{{ page.querystring }}" class="page">{{ page }}</a></li>
+                                    {% endifequal %}
+                                {% else %}
+                                    <li class="none"><a href="">...</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if all_films.has_next %}
+                                <li class="long"><a href="?{{ all_films.next_page_number.querystring }}">下一页</a></li>
+                            {% endif %}
+
+                        </ul>
+                    </div>
+				</div>
+                </div>
+			</div>
+			<div class="right layout">
+				<div class="head">热门电影推荐</div>
+				<div class="group_recommend">
+                    {% for hot_film in hot_films %}
+                    <dl>
+						<dt>
+							<a target="_blank" href="{{ ecmall_ad.url }}">
+								<img width="240" height="220" class="scrollLoading" src="{{ MEDIA_URL }}{{ hot_film.image }}"/>
+							</a>
+						</dt>
+						<dd>
+							<a target="_blank" href="{{ ecmall_ad.url }}"><h2> {{ hot_film.name }}</h2></a>
+
+						</dd>
+					</dl>
+                    {% endfor %}
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}
+
